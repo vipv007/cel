@@ -16,7 +16,7 @@ jobs:
 
       - name: Trigger other workflow
         run: |
-          echo "Triggering another workflow"
+          echo "Triggering another workflowss manual"
           # Replace with the command to trigger your desired workflow
         env:
           TARGET_BRANCH: ${{ github.event.inputs.branch }}
