@@ -1,18 +1,22 @@
-name: JMeter Test
+name: Manual Trigger
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch name'
+        required: true
 
 jobs:
-  jmeter_job:
+  trigger:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run JMeter Tests
-        uses: QAInsights/PerfAction@v3.1
-        with:
-          test-plan-path: ./CSVSample.jmx
+      - name: Trigger other workflow
+        run: |
+          echo "Triggering another workflow"
+          # Replace with the command to trigger your desired workflow
+        env:
+          TARGET_BRANCH: ${{ github.event.inputs.branch }}
