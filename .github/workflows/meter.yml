@@ -26,8 +26,18 @@ jobs:
       - name: Expose Local Application via ngrok
         run: |
           ngrok http 4200 -host-header="localhost:4200" &
-          sleep 10  # Give ngrok some time to establish the tunnel
-        background: true
+
+          # Sleep for a few seconds to allow ngrok to establish the tunnel
+          sleep 10
+          
+          # Capture the ngrok public URL and set it as an environment variable
+          export NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
+          
+          # Output the ngrok URL to the console
+          echo "NGROK URL: $NGROK_URL"
+        
+        # This step sets an environment variable that can be used in subsequent steps
+        id: ngrok
 
       - name: Run JMeter Tests
         run: |
@@ -37,7 +47,7 @@ jobs:
           export PATH=$PATH:$GITHUB_WORKSPACE/apache-jmeter-5.4.1/bin
 
           # Run your JMeter test script using the ngrok URL
-          jmeter -n -t jmeter-files/test-plan.jmx -Jhost=https://your-random-subdomain.ngrok.io -l result.jtl
+          jmeter -n -t jmeter-files/test-plan.jmx -Jhost=$NGROK_URL -l result.jtl
         working-directory: ${{ github.workspace }}
 
       - name: Upload JMeter Test Results
