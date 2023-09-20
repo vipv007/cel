@@ -1,0 +1,28 @@
+on: [push]
+jobs:
+  Main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      # Remove the JMeter test-related steps
+      
+      - name: Build and Deploy Angular Application
+        run: |
+          # Add commands to build and deploy your Angular application here
+          # For example, you might use the Angular CLI to build the app and deploy it to a server or cloud platform.
+          # Replace these commands with your actual build and deployment steps.
+          npm install -g @angular/cli
+          npm install
+          ng build --prod
+          # Add deployment commands here, e.g., deploy to AWS S3, Firebase Hosting, etc.
+      
+      - name: Analyze Results with Latency Lingo
+        uses: latency-lingo/github-action@v0.0.2
+        with:
+          api-key: ${{ secrets.LATENCY_LINGO_API_KEY }}
+          # Modify this part if needed based on your deployment
+          # For example, if you deployed to a public URL where your app is accessible:
+          url: https://example.com  # Replace with your actual application URL
+          label: Checkout Flow Automated Test Plan
+          format: jmeter
