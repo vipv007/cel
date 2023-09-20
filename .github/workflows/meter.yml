@@ -1,28 +1,47 @@
-on: [push]
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   Main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
       
-      # Remove the JMeter test-related steps
-      
-      - name: Build and Deploy Angular Application
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
+      - name: Build Angular Application
         run: |
-          # Add commands to build and deploy your Angular application here
-          # For example, you might use the Angular CLI to build the app and deploy it to a server or cloud platform.
-          # Replace these commands with your actual build and deployment steps.
-          npm install -g @angular/cli
           npm install
           ng build --prod
-          # Add deployment commands here, e.g., deploy to AWS S3, Firebase Hosting, etc.
-      
-      - name: Analyze Results with Latency Lingo
-        uses: latency-lingo/github-action@v0.0.2
+
+      - name: Expose Local Application via ngrok
+        run: |
+          ngrok http 4200 -host-header="localhost:4200" &
+          sleep 10  # Give ngrok some time to establish the tunnel
+        background: true
+
+      - name: Run JMeter Tests
+        run: |
+          # Download and install JMeter if needed
+          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz
+          tar -xzf apache-jmeter-5.4.1.tgz
+          export PATH=$PATH:$GITHUB_WORKSPACE/apache-jmeter-5.4.1/bin
+
+          # Run your JMeter test script using the ngrok URL
+          jmeter -n -t jmeter-files/test-plan.jmx -Jhost=https://your-random-subdomain.ngrok.io -l result.jtl
+        working-directory: ${{ github.workspace }}
+
+      - name: Upload JMeter Test Results
+        uses: actions/upload-artifact@v2
         with:
-          api-key: ${{ secrets.LATENCY_LINGO_API_KEY }}
-          # Modify this part if needed based on your deployment
-          # For example, if you deployed to a public URL where your app is accessible:
-          url: https://example.com  # Replace with your actual application URL
-          label: Checkout Flow Automated Test Plan
-          format: jmeter
+          name: jmeter-results
+          path: result.jtl
