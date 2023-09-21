@@ -1,4 +1,4 @@
-name: Celes
+name: Celes1
 
 
 on:
@@ -10,9 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      KUBECONFIG_PASS: ${{ secrets.KUBECONFIG_PWD }}
-      DOCKERHUB_REGISTRY: vipv/kuber
+    # env:
+    #   KUBECONFIG_PASS: ${{ secrets.KUBECONFIG_PWD }}
+    #   DOCKERHUB_REGISTRY: vipv/kuber
 
     steps:
       - name: Checkout
