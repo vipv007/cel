@@ -1,0 +1,43 @@
+name: JMeter Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  jmeter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Start ngrok
+        run: |
+          # Start ngrok to create a tunnel to your local AngularJS app
+          ngrok http 4200 -host-header="localhost:4200"
+
+      - name: Get ngrok public URL
+        id: ngrok
+        run: echo "::set-output name=ngrok_url::$(curl -s http://localhost:4040/api/tunnels | jq -r .tunnels[0].public_url)"
+
+      - name: Run JMeter Test
+        run: |
+          # Install JMeter
+          wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.4.1.tgz
+          tar -xzf apache-jmeter-5.4.1.tgz
+          
+          # Run the JMeter test with the ngrok URL
+          ./apache-jmeter-5.4.1/bin/jmeter -n -t path/to/your/test-plan.jmx -Jwebapp_url=${{ steps.ngrok.outputs.ngrok_url }} -l results.jtl
+
+      - name: Upload JMeter Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: jmeter-results
+          path: results.jtl
