@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Celes
 
 
 on:
@@ -26,10 +26,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: SonarQube Analysis
-        run: |
-          curl -o sonar-scanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip
-          echo "C:\\Users\\vipv\\sonar-scanner-5.0.1.3006-windows\\bin\\sonar-scanner.bat"
+      # - name: SonarQube Analysis
+      #   run: |
+      #     curl -o sonar-scanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip
+      #     echo "C:\\Users\\vipv\\sonar-scanner-5.0.1.3006-windows\\bin\\sonar-scanner.bat"
 
       - name: Test using Jest
         run: npm test
@@ -39,47 +39,47 @@ jobs:
         with:
           test-plan-path: ./CSVSample.jmx
 
-      - name: Build Docker image
-        run: |
-          docker build -t vipv/kuber:${{ github.run_number }} .
+  #     - name: Build Docker image
+  #       run: |
+  #         docker build -t vipv/kuber:${{ github.run_number }} .
 
-      - name: Push Docker image
-        run: |
-          docker login -u vipv -p 9092897730
-          docker push vipv/kuber:${{ github.run_number }}
+  #     - name: Push Docker image
+  #       run: |
+  #         docker login -u vipv -p 9092897730
+  #         docker push vipv/kuber:${{ github.run_number }}
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Deploy to Kubernetes
-        run: |
-          # Add your Kubernetes deployment and service commands here
-          # Example:
-          # kubectl apply -f node-web-app-deployment.yaml
-          # kubectl apply -f node-web-app-service.yaml
+  #   steps:
+  #     - name: Deploy to Kubernetes
+  #       run: |
+  #         # Add your Kubernetes deployment and service commands here
+  #         # Example:
+  #         # kubectl apply -f node-web-app-deployment.yaml
+  #         # kubectl apply -f node-web-app-service.yaml
 
-  test:
-    needs: deploy
-    runs-on: ubuntu-latest
+  # test:
+  #   needs: deploy
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Run Docker image
-        run: |
-          docker run -p 8000:8000 vipv/kuber:${{ github.run_number }}
+  #   steps:
+  #     - name: Run Docker image
+  #       run: |
+  #         docker run -p 8000:8000 vipv/kuber:${{ github.run_number }}
 
-      - name: Run Selenium Test
-        run: |
-          node helloworld.js &
-          # Wait for server to start
-          sleep 60
-          # Install Selenium dependencies
-          npm install selenium-webdriver chromedriver
-          # Run Selenium test
-          node selenium-test.js
-          # Kill the Express.js server process
-          pkill -f "node helloworld.js"
+  #     - name: Run Selenium Test
+  #       run: |
+  #         node helloworld.js &
+  #         # Wait for server to start
+  #         sleep 60
+  #         # Install Selenium dependencies
+  #         npm install selenium-webdriver chromedriver
+  #         # Run Selenium test
+  #         node selenium-test.js
+  #         # Kill the Express.js server process
+  #         pkill -f "node helloworld.js"
 
-      - name: Logout from Docker
-        run: docker logout
+  #     - name: Logout from Docker
+  #       run: docker logout
