@@ -1,57 +1,20 @@
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  Main:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-
-      - name: Install Angular CLI
-        run: npm install -g @angular/cli
-
-      - name: Build Angular Application
-        run: |
-          npm install
-          ng build --prod
-
-      - name: Expose Local Application via ngrok
-        run: |
-          ngrok http 4200 -host-header="localhost:4200" &
-
-          # Sleep for a few seconds to allow ngrok to establish the tunnel
-          sleep 10
-          
-          # Capture the ngrok public URL and set it as an environment variable
-          export NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
-          
-          # Output the ngrok URL to the console
-          echo "NGROK URL: $NGROK_URL"
-        
-        # This step sets an environment variable that can be used in subsequent steps
-        id: ngrok
-
-      - name: Run JMeter Tests
-        run: |
-          # Download and install JMeter if needed
-          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz
-          tar -xzf apache-jmeter-5.4.1.tgz
-          export PATH=$PATH:$GITHUB_WORKSPACE/apache-jmeter-5.4.1/bin
-
-          # Run your JMeter test script using the ngrok URL
-          jmeter -n -t jmeter-files/test-plan.jmx -Jhost=$NGROK_URL -l result.jtl
-        working-directory: ${{ github.workspace }}
-
-      - name: Upload JMeter Test Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: jmeter-results
-          path: result.jtl
+TestPlan:
+  - Test Plan:
+      - Thread Group:
+          - HTTP Request Defaults:
+              - Base URL: https://your-angular-app.com
+          - HTTP Cookie Manager
+          - Recording Controller:
+              - HTTP(S) Test Script Recorder:
+                  - Port: 8888
+                  - Capture HTTP Headers: true
+                  - Capture HTTP Headers: true
+          - View Results Tree
+      - Thread Group:
+          - Number of Threads (Users): 10
+          - Ramp-Up Period (in seconds): 5
+          - Loop Count: 2
+          - HTTP Request:
+              - Method: GET
+              - Path: /path/to/your/page
+          - View Results Tree
