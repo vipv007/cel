@@ -1,57 +1,85 @@
+name: CI Pipeline
+
+
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
-  Main:
+  build:
     runs-on: ubuntu-latest
+
+    env:
+      KUBECONFIG_PASS: ${{ secrets.KUBECONFIG_PWD }}
+      DOCKERHUB_REGISTRY: vipv/kuber
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      
-      - name: Set up Node.js
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: '14' # Use the desired Node.js version
 
-      - name: Install Angular CLI
-        run: npm install -g @angular/cli
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Build Angular Application
+      - name: SonarQube Analysis
         run: |
-          npm install
-          ng build --prod
+          curl -o sonar-scanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip
+          echo "C:\\Users\\vipv\\sonar-scanner-5.0.1.3006-windows\\bin\\sonar-scanner.bat"
 
-      - name: Expose Local Application via ngrok
-        run: |
-          ngrok http 4200 -host-header="localhost:4200" &
-
-          # Sleep for a few seconds to allow ngrok to establish the tunnel
-          sleep 10
-          
-          # Capture the ngrok public URL and set it as an environment variable
-          export NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
-          
-          # Output the ngrok URL to the console
-          echo "NGROK URL: $NGROK_URL"
-        
-        # This step sets an environment variable that can be used in subsequent steps
-        id: ngrok
+      - name: Test using Jest
+        run: npm test
 
       - name: Run JMeter Tests
-        run: |
-          # Download and install JMeter if needed
-          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.tgz
-          tar -xzf apache-jmeter-5.4.1.tgz
-          export PATH=$PATH:$GITHUB_WORKSPACE/apache-jmeter-5.4.1/bin
-
-          # Run your JMeter test script using the ngrok URL
-          jmeter -n -t jmeter-files/test-plan.jmx -Jhost=$NGROK_URL -l result.jtl
-        working-directory: ${{ github.workspace }}
-
-      - name: Upload JMeter Test Results
-        uses: actions/upload-artifact@v2
+        uses: QAInsights/PerfAction@v3.1
         with:
-          name: jmeter-results
-          path: result.jtl
+          test-plan-path: ./CSVSample.jmx
+
+      - name: Build Docker image
+        run: |
+          docker build -t vipv/kuber:${{ github.run_number }} .
+
+      - name: Push Docker image
+        run: |
+          docker login -u vipv -p 9092897730
+          docker push vipv/kuber:${{ github.run_number }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Kubernetes
+        run: |
+          # Add your Kubernetes deployment and service commands here
+          # Example:
+          # kubectl apply -f node-web-app-deployment.yaml
+          # kubectl apply -f node-web-app-service.yaml
+
+  test:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Docker image
+        run: |
+          docker run -p 8000:8000 vipv/kuber:${{ github.run_number }}
+
+      - name: Run Selenium Test
+        run: |
+          node helloworld.js &
+          # Wait for server to start
+          sleep 60
+          # Install Selenium dependencies
+          npm install selenium-webdriver chromedriver
+          # Run Selenium test
+          node selenium-test.js
+          # Kill the Express.js server process
+          pkill -f "node helloworld.js"
+
+      - name: Logout from Docker
+        run: docker logout
