@@ -18,6 +18,14 @@ jobs:
       #   with:
       #     java-version: '11'
 
+      - name: Install ngrok
+        run: |
+          # Download and install ngrok
+          wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+          unzip ngrok-stable-linux-amd64.zip
+          chmod +x ngrok
+          sudo mv ngrok /usr/local/bin/
+
       - name: Start ngrok
         run: |
           # Start ngrok to create a tunnel to your local AngularJS app
