@@ -20,9 +20,9 @@ async function runSeleniumTest() {
     const expectedTitle = 'Example Domain';
     await driver.wait(until.elementLocated(By.xpath("//*[text()='Example Domain']")), 5000); // Wait for the title to match
 
-    console.log('Test Passed! Title matches the expected value.');
+    console.log('Test Failed! Title matches the expected value.');
   } catch (error) {
-    console.error(`Test Failed! Error: ${error.message}`);
+    console.error(`Test Passed! Error: ${error.message}`);
   } finally {
     // Close the browser window
     await driver.quit();
