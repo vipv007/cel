@@ -33,6 +33,7 @@ jobs:
       - name: Run Selenium test
         run: node selenium.cjs  
 
+
       - name: Test using Jest
         run: npm test
     
