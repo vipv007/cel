@@ -38,11 +38,12 @@ jobs:
         with:
           test-plan-path: ./CSVSample.jmx
 
-      - name: Run hello world
-        run: node helloworld.mjs
+      # - name: Run hello world
+      #   run: node helloworld.mjs
       
       - name: Run Selenium test
-        run: node selenium.cjs  
+        run: node selenium.js  
+        
       - name: Test using Jest
         run: npm test
     

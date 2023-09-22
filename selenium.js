@@ -17,8 +17,8 @@ async function runSeleniumTest() {
     await driver.get('https://example.com');
 
     // Wait for the title to match the expected title
-    const expectedTitle = 'Hello world';
-    await driver.wait(until.elementLocated(By.xpath("//*[text()='Hello world']")), 5000); // Wait for the title to match
+    const expectedTitle = 'Example Domain';
+    await driver.wait(until.elementLocated(By.xpath("//*[text()='Example Domain']")), 5000); // Wait for the title to match
 
     console.log('Test Passed! Title matches the expected value.');
   } catch (error) {
