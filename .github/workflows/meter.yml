@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -38,7 +39,11 @@ jobs:
           test-plan-path: ./CSVSample.jmx
       - name: Test using Jest
         run: npm test
-
+      - name: Run hello world
+        run: node helloworld.mjs
+      
+      - name: Run Selenium test
+        run: node selenium.cjs
   #     - name: Build Docker image
   #       run: |
   #         docker build -t vipv/kuber:${{ github.run_number }} .
