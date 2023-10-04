@@ -50,10 +50,9 @@ jobs:
 
      
 
-      - name: Deploy to Kubernetes
+      - name: Run Docker image
         run: |
-             kubectl apply -f node-web-app-deployment.yaml 
-             kubectl apply -f node-web-app-service.yaml 
+          docker run -p 4200:4200 sivashreek/kubn:${{ github.run_number }}
              
              
      
