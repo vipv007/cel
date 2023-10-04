@@ -1,0 +1,54 @@
+name: CTA Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      KUBECONFIG: ${{ secrets.KUBECONFIG }}
+      DOCKERHUB_REGISTRY: sindhusambasivam/hello_world
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14' # Use the desired Node.js version
+
+      - name: Install Dependencies
+        run: npm install
+
+
+      - name: Set up SonarQube Scanner
+        run: |
+         curl -o sonar-scanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip
+         echo "C:\\Users\\vipv\\sonar-scanner-5.0.1.3006-windows\\bin\\sonar-scanner.bat"
+
+         
+      - name: Build Docker image
+        run: |
+         docker build -t sivashreek/kubn:${{ github.run_number }} .
+       
+
+
+      - name: Push Docker image
+        run: |
+         docker login -u sivashreek -p shreemani
+         docker push sivashreek/kubn:${{ github.run_number }}
+
+     
+
+      - name: Deploy to Kubernetes
+        run: |
+             kubectl apply -f node-web-app-deployment.yaml 
+             kubectl apply -f node-web-app-service.yaml 
+             
+             
+     
