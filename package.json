@@ -5,9 +5,12 @@
   "main": "helloworld.js",
   "type": "module",
   "scripts": {
-    "start": "node helloworld.js",
-    "test": "jest --config jest.config.cjs",
-    "build": "echo 'No build step required'"
+     
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
   "keywords": [],
   "author": "",
