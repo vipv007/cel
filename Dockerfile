@@ -1,10 +1,22 @@
-FROM node:latest as build
-WORKDIR /usr/local/app
-Copy ./ /usr/local/app/
-RUN npm install
-RUN npm run build
+FROM node:latest
 
+# Create app directory
+WORKDIR /usr/src/app
 
-FROM ngnix:latest
-COPY --from=build /usr/local/app/dist/app/usr/share/nginx/html
-EXPOSE 80
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+# If you are building your code for production
+# RUN npm ci --only=production
+RUN npm install --force
+
+# Bundle app source
+COPY . .
+
+# Bind to port 8000
+EXPOSE 4200
+
+# Start the server
+CMD [ "ng", "serve" ]
