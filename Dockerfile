@@ -1,22 +1,23 @@
-FROM node:latest
+# Use an official Node.js runtime as the base image
+FROM node:14
 
-# Create app directory
+# Create the application directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Copy package.json and package-lock.json to the container
 COPY package*.json ./
 
-# If you are building your code for production
-# RUN npm ci --only=production
-RUN npm install --force
+# Install Angular CLI globally
+RUN npm install -g @angular/cli
 
-# Bundle app source
+# Install project dependencies
+RUN npm install
+
+# Copy the entire project's source code to the container
 COPY . .
 
-# Bind to port 8000
+# Expose the default Angular development server port (4200)
 EXPOSE 4200
 
-# Start the server
-CMD [ "ng", "serve" ]
+# Start the Angular development server
+CMD ["ng", "serve", "--host", "0.0.0.0"]
