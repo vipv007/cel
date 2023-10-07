@@ -41,7 +41,7 @@ jobs:
 
       - name: Push Docker image
         run: |
-         docker login -u cmtq -p 909500@
+         docker login -u cmtq -p 90950047@
          docker push cmtq/cloud:${{ github.run_number }}
 
      
