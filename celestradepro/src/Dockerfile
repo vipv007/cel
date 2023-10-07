@@ -1,32 +1,22 @@
-# Use an official Node.js runtime as the base image
-FROM node:14 as builder
+FROM node:latest
 
-# Set the working directory in the container
-WORKDIR /app
+# Create app directory
+WORKDIR /usr/src/app
 
-# Copy the package.json and package-lock.json files to the container
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
 COPY package*.json ./
 
-# Install Angular CLI globally (if not already installed)
-RUN npm install -g @angular/cli
+# If you are building your code for production
+# RUN npm ci --only=production
+RUN npm install --force
 
-# Install project dependencies
-RUN npm install
-
-# Copy the entire project's source code to the container
+# Bundle app source
 COPY . .
 
-# Build the Angular application (you can adjust this command if needed)
-RUN ng build --prod
+# Bind to port 8000
+EXPOSE 4200
 
-# Use a lightweight Nginx image as the final base image
-FROM nginx:alpine
-
-# Copy the built Angular application from the builder stage to the Nginx directory
-COPY --from=builder /app/dist/* /usr/share/nginx/html/
-
-# Expose port 80 for the Nginx server
-EXPOSE 80
-
-# Start Nginx when the container starts
-CMD ["nginx", "-g", "daemon off;"]
+# Start the server
+CMD [ "ng", "serve" ]
