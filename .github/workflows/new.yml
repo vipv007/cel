@@ -1,0 +1,34 @@
+version: "1.0"
+diagram: "UML"
+indicators: []
+links: []
+nodes:
+  - name: "GitHubNode"
+    url: "https://github.com/Cel-Tech/CM-GitHub-Integration"
+    params:
+      id: "OSWBkmW15yQ-yJ8D3y98y"
+      label: "GitHub"
+      x: 205
+      y: 81
+      image: "./assets/images/bidb.jpg"
+  - name: "ActivityNode"
+    params:
+      id: "3X_nGf3mY9u-Mo2aB5EOC"
+      label: "Sonarqube"
+      x: 361
+      y: 183
+      icon: "<div class='icon-activity'></div>"
+  - name: "ActivityNode"
+    params:
+      id: "7Qa1ccEtz28DogFpAgA0C"
+      label: "Docker"
+      x: 216
+      y: 240
+      icon: "<div class='icon-activity'></div>"
+  - name: "DecisionNode"
+    params:
+      id: "QKE-llMer88RsNFRKMWNj"
+      label: ""
+      x: 388
+      y: 309
+      icon: "<div class='icon-decision'></div>"
