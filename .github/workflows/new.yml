@@ -1,49 +1,43 @@
-name: My GitHub Actions Workflow
-on:
-  push:
-    branches:
-      - main
+name: Simple Workflow
+description: A basic workflow example
 
-jobs:
-  my_job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-# Separated UML diagram data
----
-version: "1.0"
-diagram: "UML"
-indicators: []
-links: []
 nodes:
-  - name: "GitHubNode"
-    url: "https://github.com/Cel-Tech/CM-GitHub-Integration"
-    params:
-      id: "OSWBkmW15yQ-yJ8D3y98y"
-      label: "GitHub"
-      x: 205
-      y: 81
-      image: "./assets/images/bidb.jpg"
-  - name: "ActivityNode"
-    params:
-      id: "3X_nGf3mY9u-Mo2aB5EOC"
-      label: "Sonarqube"
-      x: 361
-      y: 183
-      icon: "<div class='icon-activity'></div>"
-  - name: "ActivityNode"
-    params:
-      id: "7Qa1ccEtz28DogFpAgA0C"
-      label: "Docker"
-      x: 216
-      y: 240
-      icon: "<div class='icon-activity'></div>"
-  - name: "DecisionNode"
-    params:
-      id: "QKE-llMer88RsNFRKMWNj"
-      label: ""
-      x: 388
-      y: 309
-      icon: "<div class='icon-decision'></div>"
+  - id: start
+    type: start
+    position:
+      x: 50
+      y: 50
+
+  - id: task1
+    type: task
+    position:
+      x: 200
+      y: 50
+    properties:
+      title: Task 1
+      description: This is the first task
+
+  - id: task2
+    type: task
+    position:
+      x: 200
+      y: 150
+    properties:
+      title: Task 2
+      description: This is the second task
+
+  - id: end
+    type: end
+    position:
+      x: 350
+      y: 100
+
+connections:
+  - from: start
+    to: task1
+
+  - from: task1
+    to: task2
+
+  - from: task2
+    to: end
