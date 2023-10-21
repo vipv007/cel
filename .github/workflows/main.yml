@@ -35,7 +35,7 @@ jobs:
 
     - name: Log in to Docker Hub
       run: |
-        docker login -u cmtq -p 90950047
+        docker login -u cmtq -p 90950047@
 
     - name: Push Docker Image
       run: |
