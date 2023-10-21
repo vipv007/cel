@@ -1,24 +1,29 @@
 # Use an official Node.js runtime as the base image
-FROM node:16
+FROM node:14 as build
 
-# Create the application directory
-WORKDIR  usr/src/app
+# Set the working directory in the container
+WORKDIR /app
 
-# Copy package.json and package-lock.json to the container
-# COPY package*.json ./
+# Copy the package.json and package-lock.json to the container
+COPY package*.json ./
 
-# Install Angular CLI globally
-# RUN npm install -g @angular/cli
+# Install dependencies
+RUN npm install
 
-# # Install project dependencies
-# RUN npm install
+# Copy the entire Angular app source code to the container
+COPY . .
 
-# Copy the entire project's source code to the container
-COPY  --from=node /app/dist/app/usr/share/nginx/html
- .
+# Build the Angular app
+RUN npm run build
 
-# Expose the default Angular development server port (4200)
-EXPOSE 4200
+# Use a smaller base image for the final image
+FROM nginx:alpine
 
-# Start the Angular development server
-CMD ["npm", "start"]
+# Copy the built Angular app from the build stage to the nginx web server's directory
+COPY --from=build /app/dist/celestradepro /usr/share/nginx/html
+
+# Expose the default HTTP port
+EXPOSE 80
+
+# Start the nginx web server
+CMD ["nginx", "-g", "daemon off;"]
