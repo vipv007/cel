@@ -1,5 +1,5 @@
-# Use an official Node.js runtime as the base image
-FROM node:14 as build
+# Use an official Node.js runtime as the base image for the build stage
+FROM node:16 as build
 
 # Set the working directory in the container
 WORKDIR /app
@@ -16,14 +16,14 @@ COPY . .
 # Build the Angular app
 RUN npm run build
 
-# Use a smaller base image for the final image
+# Use NGINX as the base image for the final stage
 FROM nginx:alpine
 
 # Copy the built Angular app from the build stage to the nginx web server's directory
 COPY --from=build /app/dist/celestradepro /usr/share/nginx/html
 
 # Expose the default HTTP port
-EXPOSE 80
+EXPOSE 4200
 
 # Start the nginx web server
 CMD ["nginx", "-g", "daemon off;"]
