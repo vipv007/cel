@@ -2,10 +2,10 @@
 FROM node:16
 
 # Create the application directory
-WORKDIR  \D:\Celes1\celestradepro
+WORKDIR  usr/src/app
 
 # Copy package.json and package-lock.json to the container
-COPY package*.json ./
+# COPY package*.json ./
 
 # Install Angular CLI globally
 # RUN npm install -g @angular/cli
