@@ -20,9 +20,11 @@ jobs:
 
     - name: Install Dependencies
       run: npm install
+      working-directory: ./Celestradepro
 
     - name: Build Angular App
       run: npm run build
+      working-directory: ./Celestradepro
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -30,6 +32,7 @@ jobs:
     - name: Build Docker Image
       run: |
         docker build -t cmtq/cloud:${{ github.run_number }} .
+        docker build -t cmtq/cloud:latest .  # Optional: Tag the image as 'latest' too
 
     - name: Log in to Docker Hub
       run: |
@@ -38,6 +41,7 @@ jobs:
     - name: Push Docker Image
       run: |
         docker push cmtq/cloud:${{ github.run_number }}
+        docker push cmtq/cloud:latest   # Optional: Push the 'latest' tag
 
     - name: Run Docker Container
       run: |
