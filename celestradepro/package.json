@@ -39,6 +39,7 @@
     "fusioncharts": "^3.19.0",
     "global": "^4.4.0",
     "highcharts-angular": "^3.0.0",
+    "highcharts": "^9.2.2",
     "httpclient": "^0.1.0",
     "jquery": "^3.6.3",
     "mongodb": "^4.13.0",
