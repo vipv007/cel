@@ -2,7 +2,7 @@
 FROM node:16
 
 # Create the application directory
-WORKDIR /usr/celestradepro
+WORKDIR /celestradepro/src/app
 
 # Copy package.json and package-lock.json to the container
 COPY package*.json ./
