@@ -26,8 +26,8 @@ jobs:
       run: npm run build
       working-directory: ./celestradepro  # Adjust this to the root of your Angular project
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+   # - name: Set up Docker Buildx
+    #  uses: docker/setup-buildx-action@v1
 
     - name: Build Docker Image
       run: |
