@@ -14,7 +14,7 @@ WORKDIR  usr/src/app
 # RUN npm install
 
 # Copy the entire project's source code to the container
-COPY .COPY  --from=node /app/dist/app/usr/share/nginx/html
+COPY  --from=node /app/dist/app/usr/share/nginx/html
  .
 
 # Expose the default Angular development server port (4200)
