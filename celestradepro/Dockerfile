@@ -19,6 +19,9 @@ RUN npm run build
 # Use NGINX as the base image for the final stage
 FROM nginx:alpine
 
+# Copy the custom nginx.conf to the NGINX configuration directory
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Copy the built Angular app from the build stage to the nginx web server's directory
 COPY --from=build /app/dist/celestradepro /usr/share/nginx/html
 
