@@ -23,7 +23,7 @@ FROM nginx:alpine
 COPY --from=build /app/dist/celestradepro /usr/share/nginx/html
 
 # Expose the default HTTP port
-EXPOSE 80
+EXPOSE 4200
 
 # Start the nginx web server
 CMD ["nginx", "-g", "daemon off;"]
